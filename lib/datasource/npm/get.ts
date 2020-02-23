@@ -12,6 +12,7 @@ import { maskToken } from '../../util/mask';
 import { getNpmrc } from './npmrc';
 import { DatasourceError, Release, ReleaseResult } from '../common';
 import { DATASOURCE_NPM } from '../../constants/data-binary-source';
+import { deprecationReplacements } from './replacements';
 
 let memcache = {};
 
@@ -167,6 +168,14 @@ export async function getDependency(
     if (latestVersion.deprecated) {
       dep.deprecationMessage = `On registry \`${regUrl}\`, the "latest" version (v${dep.latestVersion}) of dependency \`${name}\` has the following deprecation notice:\n\n\`${latestVersion.deprecated}\`\n\nMarking the latest version of an npm package as deprecated results in the entire package being considered deprecated, so contact the package author you think this is a mistake.`;
       dep.deprecationSource = DATASOURCE_NPM;
+      if (deprecationReplacements.has(dep.name)) {
+        logger.debug(
+          `${dep.name} is replaced with ${deprecationReplacements.get(
+            dep.name
+          )}`
+        );
+        dep.deprecationReplacement = deprecationReplacements.get(dep.name);
+      }
     }
     dep.releases = Object.keys(res.versions).map(version => {
       const release: NpmRelease = {

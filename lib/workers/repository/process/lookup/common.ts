@@ -13,6 +13,7 @@ export interface LookupUpdate {
   newDigest?: string;
   newDigestShort?: string;
   newMajor?: number;
+  newName?: string;
   newMinor?: number;
   newValue: string;
   newVersion?: string;
