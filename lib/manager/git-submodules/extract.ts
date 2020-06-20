@@ -4,7 +4,7 @@ import upath from 'upath';
 
 import * as datasourceGitSubmodules from '../../datasource/git-submodules';
 import { logger } from '../../logger';
-import { ManagerConfig, PackageFile } from '../common';
+import { GitSubmoduleConfig, PackageFile } from '../common';
 
 type GitModule = {
   name: string;
@@ -35,11 +35,13 @@ async function getUrl(
 }
 
 async function getBranch(
+  config: GitSubmoduleConfig,
   gitModulesPath: string,
   submoduleName: string
 ): Promise<string> {
   return (
-    (await Git().raw([
+    config.remoteTrackingBranch
+    || (await Git().raw([
       'config',
       '--file',
       gitModulesPath,
@@ -81,7 +83,7 @@ async function getModules(
 export default async function extractPackageFile(
   _content: string,
   fileName: string,
-  config: ManagerConfig
+  config: GitSubmoduleConfig
 ): Promise<PackageFile | null> {
   const git = Git(config.localDir);
   const gitModulesPath = upath.join(config.localDir, fileName);
@@ -99,7 +101,7 @@ export default async function extractPackageFile(
           const [currentValue] = (await git.subModule(['status', path]))
             .trim()
             .split(/[+\s]/);
-          const submoduleBranch = await getBranch(gitModulesPath, name);
+          const submoduleBranch = await getBranch(config, gitModulesPath, name);
           const subModuleUrl = await getUrl(git, gitModulesPath, name);
           return {
             depName: path,

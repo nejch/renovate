@@ -1269,6 +1269,12 @@ If the `versioning` for a dependency is not captured with a named group then it 
 
 This is only necessary in case you need to manually configure a registry URL to use for datasource lookups. Applies to PyPI (pip) only for now. Supports only one URL for now but is defined as a list for forward compatibility.
 
+## remoteTrackingBranch
+
+Warning: This will override remote tracking branches defined in a project's `.gitmodules`.
+
+This option allows defining a remote tracking branch to update git submodules from, instead of extracting branches defined in `.gitmodules` or the default `master`.  Only applies to git submodules.
+
 ## requiredStatusChecks
 
 This is a future feature that is partially implemented. Currently Renovate's default behaviour is to only automerge if every status check has succeeded. In future, this might be configurable to allow certain status checks to be ignored.

@@ -261,3 +261,7 @@ export interface PostUpdateConfig extends ManagerConfig, Record<string, any> {
   branchName?: string;
   reuseExistingBranch?: boolean;
 }
+
+export interface GitSubmoduleConfig extends ManagerConfig {
+  remoteTrackingBranch: string;
+}
